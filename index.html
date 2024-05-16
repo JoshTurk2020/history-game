@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>American History Hangman</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .hangman-container {
+      display: inline-block;
+      margin-top: 50px;
+    }
+    .word-container {
+      margin-bottom: 20px;
+    }
+    .guessed-letters {
+      margin-bottom: 20px;
+    }
+    .message {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .options {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .option-button {
+      margin: 5px;
+      padding: 5px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+    }
+    .option-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>American History Hangman</h1>
+  <div class="hangman-container">
+    <div class="question-container"></div>
+    <div class="guessed-letters"></div>
+    <div class="message"></div>
+    <div class="options"></div>
+  </div>
+
+  <script>
+    const questions = [
+  { question: "During what geological period did the last Ice Age occur?", answer: "Pleistocene", options: ["Pleistocene", "Holocene", "Pliocene", "Miocene"] },
+  { question: "What ancient civilization was known for building large earthen mounds in present-day Ohio?", answer: "Hopewell", options: ["Hopewell", "Mississippian", "Ancestral Puebloans", "Iroquois"] },
+  { question: "Which Native American tribe constructed cliff dwellings in the southwestern United States?", answer: "Ancestral Puebloans", options: ["Ancestral Puebloans", "Hohokam", "Mound Builders", "Mississippian"] },
+  { question: "What event led to the extinction of many large mammal species in North America around 11,000 years ago?", answer: "Younger Dryas Impact Hypothesis", options: ["Younger Dryas Impact Hypothesis", "Bering Land Bridge", "Pleistocene Overkill", "La Brea Tar Pits"] },
+  { question: "Who were the first Europeans to explore the eastern coast of North America?", answer: "Vikings", options: ["Vikings", "Spanish", "Portuguese", "French"] },
+  { question: "What Italian explorer is credited with discovering the mainland of North America?", answer: "John Cabot", options: ["John Cabot", "Christopher Columbus", "Amerigo Vespucci", "Juan Ponce de León"] },
+  { question: "Which European explorer claimed the Mississippi River and surrounding areas for France?", answer: "La Salle", options: ["La Salle", "Jacques Cartier", "Henry Hudson", "Francisco Vázquez de Coronado"] },
+  { question: "What was the name of the first successful English colony in North America?", answer: "Jamestown", options: ["Jamestown", "Plymouth", "Roanoke", "Massachusetts Bay"] },
+  { question: "Who founded the colony of Pennsylvania as a haven for Quakers?", answer: "William Penn", options: ["William Penn", "Roger Williams", "John Winthrop", "James Oglethorpe"] },
+  { question: "What was the name of the war between England and France fought in North America during the mid-18th century?", answer: "French and Indian War", options: ["French and Indian War", "American Revolutionary War", "Seven Years' War", "War of 1812"] },
+  { question: "What document formally declared the independence of the American colonies from Great Britain?", answer: "Declaration of Independence", options: ["Declaration of Independence", "Constitution", "Bill of Rights", "Articles of Confederation"] },
+  { question: "Who was the primary author of the Declaration of Independence?", answer: "Thomas Jefferson", options: ["Thomas Jefferson", "George Washington", "John Adams", "Benjamin Franklin"] },
+  { question: "Which battle is considered the turning point of the American Revolutionary War?", answer: "Battle of Saratoga", options: ["Battle of Saratoga", "Battle of Bunker Hill", "Battle of Yorktown", "Battle of Lexington and Concord"] },
+  { question: "Which European nation provided significant military and financial support to the American colonies during the Revolutionary War?", answer: "France", options: ["France", "Spain", "Netherlands", "Germany"] },
+  { question: "Who was the first President of the United States under the Constitution?", answer: "George Washington", options: ["George Washington", "Thomas Jefferson", "John Adams", "James Madison"] },
+  { question: "What was the name of the rebellion by farmers in Massachusetts against the state government's tax policies?", answer: "Shays' Rebellion", options: ["Shays' Rebellion", "Whiskey Rebellion", "Bacon's Rebellion", "Regulator Movement"] },
+  { question: "Which political party was formed by supporters of Thomas Jefferson in opposition to the Federalists?", answer: "Democratic-Republican Party", options: ["Democratic-Republican Party", "Federalist Party", "Whig Party", "Democratic Party"] },
+  { question: "What event marked the end of the War of 1812?", answer: "Treaty of Ghent", options: ["Treaty of Ghent", "Battle of New Orleans", "Hartford Convention", "Burnt Corn Creek"] },
+  { question: "Who wrote the poem that later became the lyrics for the U.S. national anthem, 'The Star-Spangled Banner'?", answer: "Francis Scott Key", options: ["Francis Scott Key", "John Philip Sousa", "Stephen Foster", "Irving Berlin"] },
+  { question: "Which U.S. President is known for his policy of Indian removal, leading to the 'Trail of Tears'?", answer: "Andrew Jackson", options: ["Andrew Jackson", "Martin Van Buren", "John Tyler", "James K. Polk"] },
+  { question: "What invention revolutionized agriculture in the South and increased the demand for slave labor?", answer: "Cotton gin", options: ["Cotton gin", "Steam engine", "Reaper", "Plow"] },
+  { question: "What was the name of the movement to abolish slavery in the United States?", answer: "Abolitionist Movement", options: ["Abolitionist Movement", "Underground Railroad", "Emancipation Proclamation", "Fugitive Slave Act"] },
+  { question: "What territory did the United States acquire from Spain after the Spanish-American War?", answer: "Philippines", options: ["Philippines", "Cuba", "Puerto Rico", "Guam"] },
+  { question: "Which President signed the Civil Rights Act of 1964 into law?", answer: "Lyndon B. Johnson", options: ["Lyndon B. Johnson", "John F. Kennedy", "Richard Nixon", "Dwight D. Eisenhower"] },
+  { question: "What was the name of the first satellite launched into space by the United States?", answer: "Explorer 1", options: ["Explorer 1", "Sputnik 1", "Vanguard 1", "Telstar 1"] },
+  { question: "Who was the first African American to serve on the United States Supreme Court?", answer: "Thurgood Marshall", options: ["Thurgood Marshall", "Clarence Thomas", "Ruth Bader Ginsburg", "Sandra Day O'Connor"] },
+  { question: "What event marked the beginning of the Watergate scandal?", answer: "Break-in at the Democratic National Committee headquarters", options: ["Break-in at the Democratic National Committee headquarters", "Resignation of President Nixon", "Publication of the Pentagon Papers", "Passage of the War Powers Resolution"] },
+  { question: "Which U.S. President signed the Voting Rights Act of 1965 into law?", answer: "Lyndon B. Johnson", options: ["Lyndon B. Johnson", "John F. Kennedy", "Richard Nixon", "Dwight D. Eisenhower"] },
+  { question: "What was the name of the operation that led to the successful landing of American astronauts on the moon?", answer: "Apollo", options: ["Apollo", "Mercury", "Gemini", "Space Shuttle"] },
+  { question: "Who was the first woman to serve as Speaker of the United States House of Representatives?", answer: "Nancy Pelosi", options: ["Nancy Pelosi", "Geraldine Ferraro", "Barbara Jordan", "Shirley Chisholm"] },
+  { question: "What was the name of the terrorist attacks on September 11, 2001?", answer: "9/11", options: ["9/11", "Pearl Harbor", "Oklahoma City bombing", "Boston Marathon bombing"] },
+  { question: "Which U.S. President signed the Affordable Care Act (Obamacare) into law?", answer: "Barack Obama", options: ["Barack Obama", "George W. Bush", "Bill Clinton", "Donald Trump"] },
+  { question: "What was the name of the landmark Supreme Court case that legalized same-sex marriage nationwide?", answer: "Obergefell v. Hodges", options: ["Obergefell v. Hodges", "Roe v. Wade", "Brown v. Board of Education", "Citizens United v. FEC"] },
+  { question: "Who was the first African American to be elected President of the United States?", answer: "Barack Obama", options: ["Barack Obama", "Colin Powell", "Condoleezza Rice", "Jesse Jackson"] },
+  { question: "What was the name of the hurricane that devastated New Orleans in 2005?", answer: "Hurricane Katrina", options: ["Hurricane Katrina", "Hurricane Sandy", "Hurricane Rita", "Hurricane Andrew"] },
+  { question: "What was the name of the treaty that ended the Cold War?", answer: "Treaty on the Final Settlement with Respect to Germany", options: ["Treaty on the Final Settlement with Respect to Germany", "SALT II Treaty", "START Treaty", "Intermediate-Range Nuclear Forces Treaty"] },
+  { question: "Who was the first woman to be nominated for Vice President by a major party in the United States?", answer: "Geraldine Ferraro", options: ["Geraldine Ferraro", "Sarah Palin", "Hillary Clinton", "Kamala Harris"] },
+  { question: "What was the name of the scandal involving the break-in at the Democratic National Committee headquarters in 1972?", answer: "Watergate", options: ["Watergate", "Iran-Contra", "Teapot Dome", "Lewinsky scandal"] },
+  { question: "Which U.S. President ordered the dropping of atomic bombs on Hiroshima and Nagasaki?", answer: "Harry S. Truman", options: ["Harry S. Truman", "Franklin D. Roosevelt", "Dwight D. Eisenhower", "John F. Kennedy"] },
+  { question: "What was the name of the period of tension between the United States and the Soviet Union after World War II?", answer: "Cold War", options: ["Cold War", "Space Race", "Arms Race", "McCarthyism"] },
+  { question: "Who was the first American astronaut to orbit the Earth?", answer: "John Glenn", options: ["John Glenn", "Neil Armstrong", "Alan Shepard", "Yuri Gagarin"] },
+  { question: "What was the name of the economic policy implemented by President Franklin D. Roosevelt to combat the Great Depression?", answer: "New Deal", options: ["New Deal", "Great Society", "Fair Deal", "Square Deal"] },
+  { question: "Who was the first American woman in space?", answer: "Sally Ride", options: ["Sally Ride", "Christa McAuliffe", "Valentina Tereshkova", "Mae Jemison"] },
+  { question: "What was the name of the social movement aimed at achieving equal rights for women in the United States?", answer: "Feminist Movement", options: ["Feminist Movement", "Women's Suffrage Movement", "Civil Rights Movement", "Abolitionist Movement"] },
+  { question: "Who was the leader of the Civil Rights Movement and delivered the famous 'I Have a Dream' speech?", answer: "Martin Luther King Jr.", options: ["Martin Luther King Jr.", "Malcolm X", "Rosa Parks", "John Lewis"] },
+  { question: "What was the name of the period of rapid economic growth and suburban expansion in the United States after World War II?", answer: "Postwar Boom", options: ["Postwar Boom", "Roaring Twenties", "Great Depression", "Gilded Age"] },
+  { question: "Who was the first American woman to win the Nobel Peace Prize?", answer: "Jane Addams", options: ["Jane Addams", "Eleanor Roosevelt", "Mother Teresa", "Rigoberta Menchú"] },
+  { question: "What was the name of the agreement between President Roosevelt and British Prime Minister Churchill outlining their goals for the post-World War II world?", answer: "Atlantic Charter", options: ["Atlantic Charter", "Yalta Agreement", "Potsdam Conference", "Tehran Conference"] }
+];
+
+    let currentQuestionIndex = -1;
+    let guessedLetters = [];
+    let remainingGuesses = 6;
+
+    function startGame() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex >= questions.length) {
+        currentQuestionIndex = 0; // Loop back to the first question
+      }
+      guessedLetters = [];
+      remainingGuesses = 6;
+      updateQuestion();
+      updateGuessedLetters();
+      updateMessage('');
+      updateOptions();
+    }
+
+    function updateQuestion() {
+      const questionContainer = document.querySelector('.question-container');
+      questionContainer.textContent = questions[currentQuestionIndex].question;
+    }
+
+    function updateGuessedLetters() {
+      const guessedLettersContainer = document.querySelector('.guessed-letters');
+      guessedLettersContainer.innerHTML = `Guessed Letters: ${guessedLetters.join(', ')}`;
+    }
+
+    function updateMessage(message) {
+      const messageContainer = document.querySelector('.message');
+      messageContainer.textContent = message;
+    }
+
+    function updateOptions() {
+      const optionsContainer = document.querySelector('.options');
+      optionsContainer.innerHTML = '';
+      const options = questions[currentQuestionIndex].options;
+      options.forEach(option => {
+        const button = document.createElement('button');
+        button.textContent = option;
+        button.classList.add('option-button');
+        button.addEventListener('click', function() {
+          checkAnswer(option);
+        });
+        optionsContainer.appendChild(button);
+      });
+    }
+
+    function checkAnswer(option) {
+      const answer = questions[currentQuestionIndex].answer.toUpperCase();
+      if (option.toUpperCase() === answer) {
+        updateMessage('Congratulations! You won!');
+        setTimeout(startGame, 2000);
+      } else {
+        remainingGuesses--;
+        updateMessage(`Wrong guess. Remaining guesses: ${remainingGuesses}`);
+        if (remainingGuesses === 0) {
+          updateMessage(`Game over! The answer was: ${answer}`);
+          setTimeout(startGame, 2000);
+        }
+      }
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
